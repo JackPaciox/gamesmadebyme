@@ -12,8 +12,8 @@ type Padle struct {
 }
 
 func NewPadle(Window rl.Rectangle, isPlayer bool) *Padle {
-	padleWidth := float32(20)
-	padleHeight := float32(100)
+	padleWidth := float32(50)
+	padleHeight := float32(300)
 	initialPosition := rl.Vector2{}
 	if isPlayer {
 		initialPosition = rl.NewVector2(30, (Window.Height-padleHeight)/2)
@@ -24,7 +24,24 @@ func NewPadle(Window rl.Rectangle, isPlayer bool) *Padle {
 		Position: initialPosition,
 		Width:    padleWidth,
 		Height:   padleHeight,
-		Speed:    500,
+		Speed:    600,
+	}
+}
+
+func (p *Padle) Move(deltaTime float32, Window rl.Rectangle) {
+	switch {
+	case rl.IsKeyDown(rl.KeyW) && p.Position.Y > 0:
+		p.Position.Y -= p.Speed * deltaTime
+	case rl.IsKeyDown(rl.KeyS) && p.Position.Y+p.Height < Window.Height:
+		p.Position.Y += p.Speed * deltaTime
+	}
+}
+
+func (p *Padle) Bot(deltaTime float32, Window rl.Rectangle, bp rl.Vector2) {
+	if bp.Y > p.Position.Y && bp.X > Window.Width/2 && p.Position.Y+p.Height < Window.Height {
+		p.Position.Y += p.Speed * deltaTime
+	} else if bp.Y < p.Position.Y && bp.X > Window.Width/2 && p.Position.Y > 0 {
+		p.Position.Y -= p.Speed * deltaTime
 	}
 }
 

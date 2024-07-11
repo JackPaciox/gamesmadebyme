@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	m "game/pong/models"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
@@ -41,22 +42,30 @@ func main() {
 	score := m.NewScore()
 
 	for !rl.WindowShouldClose() {
-
+		//m.MoveUp(rl.GetFrameTime())
 		ball.Update(rl.GetFrameTime())
+		player.Move(rl.GetFrameTime(), windowSize)
+
+		if int32(rl.GetFrameTime())%10 == 0 {
+			enemy.Bot(rl.GetFrameTime(), windowSize, ball.Position)
+		}
 
 		rl.BeginDrawing()
 
 		s.CollisionService(windowSize, ball, player, enemy, score)
-		// Draw player score
-		rl.DrawText(string(score.Player), int32(screenWidth/2-50), 20, 40, rl.White)
-		// Draw enemy score
-		rl.DrawText(string(score.Enemy), int32(screenWidth/2+25), 20, 40, rl.White)
-
 		rl.ClearBackground(rl.RayWhite)
 		rl.DrawTexturePro(bg, bgSize, windowSize, bgPos, 0.0, rl.White)
+
 		player.Draw()
 		enemy.Draw()
 		ball.Draw()
+
+		// Draw player score
+		rl.DrawText(fmt.Sprint(score.Player), int32(screenWidth/2+25), 20, 40, rl.White)
+
+		// Draw enemy score
+		rl.DrawText(fmt.Sprint(score.Enemy), int32(screenWidth/2-50), 20, 40, rl.White)
+
 		rl.EndDrawing()
 	}
 
